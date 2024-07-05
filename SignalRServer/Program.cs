@@ -1,4 +1,4 @@
-using SignalRServer;
+using SignalRServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,6 @@ var alertHubPath = uri.AbsolutePath;
 
 var app = builder.Build();
 app.MapHub<AlertHub>(alertHubPath);
+Console.WriteLine("relative path: " + alertHubPath);
 
-//app.MapGet("/", () => "Hello World!");
-
-app.Run();
+await app.RunAsync();
