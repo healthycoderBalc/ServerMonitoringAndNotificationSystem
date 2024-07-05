@@ -42,6 +42,13 @@ namespace MessageProcessingAndAnomalyDetection.Services
             bool memoryUsageAnomalyAlert = currentStatistics.MemoryUsage > previousStatistics.MemoryUsage * (1 + _memoryUsageAnomalyThreshold);
             bool cpuUsageAnomalyAlert = currentStatistics.CpuUsage > previousStatistics.CpuUsage * (1 + _cpuUsageAnomalyThreshold);
 
+            SendAlert(new Alert
+            {
+                ServerIdentifier = currentStatistics.ServerIdentifier,
+                AlertType = "Test",
+                Message = $"test detected. Current: {currentStatistics.MemoryUsage}, Previous: {previousStatistics.MemoryUsage}",
+                Timestamp = currentStatistics.Timestamp
+            });
             if (memoryUsageAnomalyAlert)
             {
                 SendAlert(new Alert
@@ -95,11 +102,12 @@ namespace MessageProcessingAndAnomalyDetection.Services
             try
             {
                 _logger.LogInformation("Sending alert: {AlertType} for ServerIdentifier: {ServerIdentifier}", alert.AlertType, alert.ServerIdentifier);
-                await _hubConnection.SendAsync("SendAlert", alert);
+                await _hubConnection.InvokeAsync("SendMessage", alert);
+                _logger.LogInformation("Alert was sent");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending alert");
+                _logger.LogError(ex.Message, "Error sending alert");
             }
         }
     }

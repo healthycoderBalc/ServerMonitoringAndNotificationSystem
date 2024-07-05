@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageProcessingAndAnomaly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRServer", "SignalRServer\SignalRServer.csproj", "{44F47685-E888-46E6-901E-400842364A4C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalREventConsumerService", "SignalREventConsumerService\SignalREventConsumerService.csproj", "{2E0DA608-BBFE-42FB-A693-DF9F6799640E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{44F47685-E888-46E6-901E-400842364A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44F47685-E888-46E6-901E-400842364A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44F47685-E888-46E6-901E-400842364A4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E0DA608-BBFE-42FB-A693-DF9F6799640E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E0DA608-BBFE-42FB-A693-DF9F6799640E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E0DA608-BBFE-42FB-A693-DF9F6799640E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E0DA608-BBFE-42FB-A693-DF9F6799640E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
