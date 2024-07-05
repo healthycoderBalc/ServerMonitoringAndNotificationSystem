@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerMonitoringAndNotificationSystem", "ServerMonitoringAndNotificationSystem\ServerMonitoringAndNotificationSystem.csproj", "{FFC25F23-5BC4-4653-80F4-1FD639ECF08E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerMonitoringAndNotificationSystem", "ServerMonitoringAndNotificationSystem\ServerMonitoringAndNotificationSystem.csproj", "{FFC25F23-5BC4-4653-80F4-1FD639ECF08E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageProcessingAndAnomalyDetection", "MessageProcessingAndAnomalyDetection\MessageProcessingAndAnomalyDetection.csproj", "{6040714A-3541-433F-8BE4-B02C0F92C369}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRServer", "SignalRServer\SignalRServer.csproj", "{44F47685-E888-46E6-901E-400842364A4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{FFC25F23-5BC4-4653-80F4-1FD639ECF08E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFC25F23-5BC4-4653-80F4-1FD639ECF08E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFC25F23-5BC4-4653-80F4-1FD639ECF08E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6040714A-3541-433F-8BE4-B02C0F92C369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6040714A-3541-433F-8BE4-B02C0F92C369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6040714A-3541-433F-8BE4-B02C0F92C369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6040714A-3541-433F-8BE4-B02C0F92C369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44F47685-E888-46E6-901E-400842364A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44F47685-E888-46E6-901E-400842364A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44F47685-E888-46E6-901E-400842364A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44F47685-E888-46E6-901E-400842364A4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

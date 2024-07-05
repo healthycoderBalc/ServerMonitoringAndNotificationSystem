@@ -36,7 +36,7 @@ namespace ServerMonitoringAndNotificationSystem.Services.RabbitMq
             var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(statistics));
 
             _channel.BasicPublish(
-                exchange: "",
+                exchange: "server_statistics",
                 routingKey: topic,
                 basicProperties: null,
                 body: body
