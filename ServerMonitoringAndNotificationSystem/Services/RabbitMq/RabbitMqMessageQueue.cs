@@ -15,11 +15,20 @@ namespace ServerMonitoringAndNotificationSystem.Services.RabbitMq
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly string _exchangeName = "server_statistics";
 
         public RabbitMqMessageQueue(IRabbitMqConnectionFactory connectionFactory)
         {
             _connection = connectionFactory.CreateConnection() ?? throw new ArgumentNullException(nameof(connectionFactory));
             _channel = connectionFactory.CreateChannel(_connection) ?? throw new ArgumentNullException(nameof(connectionFactory));
+
+            _channel.ExchangeDeclare(
+                exchange: _exchangeName,
+                type: ExchangeType.Topic,
+                durable: true,
+                autoDelete: false,
+                arguments: null
+            );
         }
 
 
@@ -33,10 +42,16 @@ namespace ServerMonitoringAndNotificationSystem.Services.RabbitMq
                 arguments: null
                 );
 
+            _channel.QueueBind(
+                queue: topic,
+                exchange: _exchangeName,
+                routingKey: topic
+            );
+
             var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(statistics));
 
             _channel.BasicPublish(
-                exchange: "server_statistics",
+                exchange: _exchangeName,
                 routingKey: topic,
                 basicProperties: null,
                 body: body
