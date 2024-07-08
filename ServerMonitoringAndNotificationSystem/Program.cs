@@ -18,10 +18,20 @@ var configuration = new ConfigurationBuilder()
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        services.AddSingleton<IConfiguration>(configuration);
-        services.Configure<ServerStatisticsConfig>(configuration.GetSection("ServerStatisticsConfig"));
+        var configuration = new ConfigurationBuilder()
+          .AddEnvironmentVariables()
+          .Build();
+        services.Configure<RabbitMqConfig>(options =>
+        {
+            options.HostName = configuration["RABBITMQ_HOSTNAME"];
+        });
+        services.Configure<ServerStatisticsConfig>(options =>
+        {
+            options.ServerIdentifier = configuration["SERVER_IDENTIFIER"];
+            options.SamplingIntervalSeconds = int.Parse(configuration["SAMPLING_INTERVAL_SECONDS"]);
+        });
         services.AddSingleton<IStatisticsCollector, StatisticsCollector>();
-        services.AddSingleton<IRabbitMqConnectionFactory>(provider => new RabbitMqConnectionFactory("localhost"));
+        services.AddSingleton<IRabbitMqConnectionFactory>(provider => new RabbitMqConnectionFactory(configuration["RABBITMQ_HOSTNAME"]));
         services.AddSingleton<IMessageQueue, RabbitMqMessageQueue>();
         services.AddSingleton<StatisticsPublisherService>();
     })
