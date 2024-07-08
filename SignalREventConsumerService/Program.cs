@@ -7,12 +7,12 @@ using Microsoft.Extensions.Options;
 using SignalREventConsumerService.Services;
 using System;
 
-var builder = new ConfigurationBuilder()
+var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables()
     .Build();
 
-var signalRUrl = builder["SignalRConfig:SignalRUrl"];
+var signalRUrl = configuration["SIGNALR_URL"];
 Console.WriteLine("Connecting to: " + signalRUrl + "...");
 
 var hubConnection = new HubConnectionBuilder()

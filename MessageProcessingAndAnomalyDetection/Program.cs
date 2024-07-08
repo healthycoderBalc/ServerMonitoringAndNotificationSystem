@@ -10,15 +10,38 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using System;
 using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<RabbitMqConfig>(builder.Configuration.GetSection("RabbitMqConfig"));
-builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection("MongoDbConfig"));
-builder.Services.Configure<AnomalyDetectionConfig>(builder.Configuration.GetSection("AnomalyDetectionConfig"));
-builder.Services.Configure<SignalRConfig>(builder.Configuration.GetSection("SignalRConfig"));
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.Configure<RabbitMqConfig>(options =>
+{
+    options.HostName = builder.Configuration["RABBITMQ_HOSTNAME"];
+    options.UserName = builder.Configuration["RABBITMQ_USERNAME"];
+    options.Password = builder.Configuration["RABBITMQ_PASSWORD"];
+});
+
+builder.Services.Configure<MongoDbConfig>(options =>
+{
+    options.ConnectionString = builder.Configuration["MONGODB_CONNECTIONSTRING"];
+    options.DatabaseName = builder.Configuration["MONGODB_DATABASENAME"];
+    options.CollectionName = builder.Configuration["MONGODB_COLLECTIONNAME"];
+});
+builder.Services.Configure<AnomalyDetectionConfig>(options =>
+{
+    options.MemoryUsageAnomalyThresholdPercentage = double.Parse(builder.Configuration["MEMORY_USAGE_ANOMALY_THRESHOLD_PERCENTAGE"]);
+    options.CpuUsageAnomalyThresholdPercentage = double.Parse(builder.Configuration["CPU_USAGE_ANOMALY_THRESHOLD_PERCENTAGE"]);
+    options.MemoryUsageThresholdPercentage = double.Parse(builder.Configuration["MEMORY_USAGE_THRESHOLD_PERCENTAGE"]);
+    options.CpuUsageThresholdPercentage = double.Parse(builder.Configuration["CPU_USAGE_THRESHOLD_PERCENTAGE"]);
+});
+builder.Services.Configure<SignalRConfig>(options =>
+{
+    options.SignalRUrl = builder.Configuration["SIGNALR_URL"];
+});
 
 builder.Services.AddLogging(configure => configure.AddConsole());
 builder.Services.AddSingleton<IRabbitMqConnectionSubscribeFactory, RabbitMqConnectionSubscribeFactory>(sp =>

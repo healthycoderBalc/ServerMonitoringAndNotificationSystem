@@ -19,7 +19,7 @@ namespace ServerMonitoringAndNotificationSystem.Services.RabbitMq
 
         public IConnection CreateConnection()
         {
-            var factory = new ConnectionFactory() { HostName = _hostname };
+            var factory = new ConnectionFactory() { HostName = _hostname};
             return factory.CreateConnection();
         }
 

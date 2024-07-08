@@ -1,0 +1,92 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  mongodb:
+    image: mongo
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mmrbalcazar
+      - MONGO_INITDB_ROOT_PASSWORD=FBAc8KKJ0DMCvJWk
+    volumes:
+      - mongo_data:/data/db
+
+  servermonitoringandnotificationsystem:
+    image: ${DOCKER_REGISTRY-}servermonitoringandnotificationsystem
+    build:
+      context: .
+      dockerfile: ServerMonitoringAndNotificationSystem/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOSTNAME=localhost
+      - SAMPLING_INTERVAL_SECONDS=60
+      - SERVER_IDENTIFIER=linux1
+    depends_on:
+      - rabbitmq
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+   
+
+  messageprocessingandanomalydetection:
+    image: ${DOCKER_REGISTRY-}messageprocessingandanomalydetection
+    build:
+      context: .
+      dockerfile: MessageProcessingAndAnomalyDetection/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOSTNAME=localhost
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - MONGODB_CONNECTIONSTRING=mongodb://mmrbalcazar:FBAc8KKJ0DMCvJWk@mongo-container:27017
+      - MEMORY_USAGE_ANOMALY_THRESHOLD_PERCENTAGE=0.4
+      - CPU_USAGE_ANOMALY_THRESHOLD_PERCENTAGE=0.5
+      - MEMORY_USAGE_THRESHOLD_PERCENTAGE=0.8
+      - CPU_USAGE_THRESHOLD_PERCENTAGE=0.9
+      - SIGNALR_URL=http://localhost:8080/alertHub
+    depends_on:
+      - rabbitmq
+      - mongodb
+
+  signalreventconsumerservice:
+    image: ${DOCKER_REGISTRY-}signalreventconsumerservice
+    build:
+      context: .
+      dockerfile: SignalREventConsumerService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SIGNALR_URL=http://signalrserver:8080/alertHub
+    depends_on:
+      - signalrserver
+
+  signalrserver:
+    image: ${DOCKER_REGISTRY-}signalrserver
+    build:
+      context: .
+      dockerfile: SignalRServer/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - SIGNALR_URL=https://localhost:8080/alertHub
+    ports:
+      - "8080:80"
+      - "8081:443"
+    depends_on:
+      - messageprocessingandanomalydetection
+      - servermonitoringandnotificationsystem
+
+volumes:
+  rabbitmq_data:
+  mongo_data:
