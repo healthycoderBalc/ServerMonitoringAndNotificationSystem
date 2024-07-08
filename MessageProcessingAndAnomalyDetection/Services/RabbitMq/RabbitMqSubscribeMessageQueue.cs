@@ -26,7 +26,6 @@ namespace MessageProcessingAndAnomalyDetection.Services.RabbitMq
         public void Subscribe(string topic, Action<string, string> handleMessage)
         {
             _logger.LogInformation("Subscribing to topic: {Topic}", topic);
-            Console.WriteLine("Enter Rabit subscriveQueue");
             _channel.ExchangeDeclare(exchange: "server_statistics", type: ExchangeType.Topic, durable: true);
             var queueName = _channel.QueueDeclare().QueueName;
             _channel.QueueBind(queue: queueName, exchange: "server_statistics", routingKey: topic);

@@ -28,7 +28,6 @@ namespace MessageProcessingAndAnomalyDetection.Services.MongoDb
 
         public IMongoCollection<ServerStatistics> CreateStatisticsCollection()
         {
-            Console.WriteLine("Enter create statisticsCollection in mongo factory");
             var client = new MongoClient(_connectionString);
             var database = client.GetDatabase(_databaseName);
             return database.GetCollection<ServerStatistics>(_collectionName);

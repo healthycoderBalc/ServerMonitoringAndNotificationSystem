@@ -25,8 +25,6 @@ namespace MessageProcessingAndAnomalyDetection.Services.MongoDb
         {
             try
             {
-
-                Console.WriteLine("insertStatistics mongo db service");
                 await _statisticsCollection.InsertOneAsync(statistics);
             }
             catch (Exception ex)
@@ -38,7 +36,6 @@ namespace MessageProcessingAndAnomalyDetection.Services.MongoDb
 
         public IEnumerable<ServerStatistics> GetStatistics(string serverIdentifier)
         {
-            Console.WriteLine("get statistics mongo db service");
             return _statisticsCollection.Find(stat => stat.ServerIdentifier == serverIdentifier).ToList();
         }
 

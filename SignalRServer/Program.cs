@@ -11,6 +11,5 @@ var alertHubPath = uri.AbsolutePath;
 
 var app = builder.Build();
 app.MapHub<AlertHub>(alertHubPath);
-Console.WriteLine("relative path: " + alertHubPath);
 
 await app.RunAsync();

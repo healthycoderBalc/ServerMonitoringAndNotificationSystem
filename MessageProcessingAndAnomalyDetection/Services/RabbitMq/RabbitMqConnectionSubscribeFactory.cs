@@ -25,7 +25,6 @@ namespace MessageProcessingAndAnomalyDetection.Services.RabbitMq
         public IConnection CreateConnection()
         {
             var factory = new ConnectionFactory() { HostName = _hostname, UserName = _username, Password = _password };
-            Console.WriteLine("CreateConnectionRabbit Subscribe");
             return factory.CreateConnection();
         }
 
