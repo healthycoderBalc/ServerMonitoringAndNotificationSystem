@@ -19,7 +19,13 @@ namespace ServerMonitoringAndNotificationSystem.Services.RabbitMq
 
         public IConnection CreateConnection()
         {
-            var factory = new ConnectionFactory() { HostName = _hostname };
+            var factory = new ConnectionFactory();
+            factory.UserName = "agent";
+            factory.Password = "agent";
+            factory.VirtualHost = "/";
+            factory.HostName = "rabbitmq";
+            factory.Port = AmqpTcpEndpoint.UseDefaultPort;
+            //{ HostName = _hostname };
             return factory.CreateConnection();
         }
 

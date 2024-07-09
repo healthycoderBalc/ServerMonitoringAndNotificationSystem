@@ -4,7 +4,11 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "servermonitoringandnotificationsystem": "StartDebugging"
+        "servermonitoringandnotificationsystem": "StartDebugging",
+        "messageprocessingandanomalydetection": "StartDebugging",
+        "mongodb": "StartWithoutDebugging",
+        "rabbitmq": "StartWithoutDebugging",
+        "signalrserver": "StartDebugging"
       }
     }
   }

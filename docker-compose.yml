@@ -1,24 +1,12 @@
 services:
-  servermonitoringandnotificationsystem:
-    image: ${DOCKER_REGISTRY-}servermonitoringandnotificationsystem
-    build:
-      context: .
-      dockerfile: ServerMonitoringAndNotificationSystem/Dockerfile
-    environment:
-      - RABBITMQ_HOSTNAME=rabbitmq
-      - SERVER_IDENTIFIER=linux1
-      - SAMPLING_INTERVAL_SECONDS=60
-    depends_on:
-      - rabbitmq
-
   rabbitmq:
     image: rabbitmq:3-management
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_USER=agent
+      - RABBITMQ_DEFAULT_PASS=agent
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
@@ -31,6 +19,59 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - mongo_data:/data/db
+
+  servermonitoringandnotificationsystem:
+    image: ${DOCKER_REGISTRY-}servermonitoringandnotificationsystem
+    build:
+      context: .
+      dockerfile: ServerMonitoringAndNotificationSystem/Dockerfile
+    environment:
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - SERVER_IDENTIFIER=linux1
+      - SAMPLING_INTERVAL_SECONDS=60
+    depends_on:
+      - rabbitmq
+
+  messageprocessingandanomalydetection:
+    image: messageprocessingandanomalydetection
+    build:
+      context: .
+      dockerfile: MessageProcessingAndAnomalyDetection/Dockerfile
+    environment:
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_USERNAME=agent
+      - RABBITMQ_PASSWORD=agent
+      - MONGODB_CONNECTIONSTRING=mongodb+srv://mmrbalcazar:FBAc8KKJ0DMCvJWk@cluster0.tix8qz7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - MONGODB_DATABASENAME=ServerStatisticsDB
+      - MONGODB_COLLECTIONNAME=Statistics
+      - MEMORY_USAGE_ANOMALY_THRESHOLD_PERCENTAGE=0.4
+      - CPU_USAGE_ANOMALY_THRESHOLD_PERCENTAGE=0.5
+      - MEMORY_USAGE_THRESHOLD_PERCENTAGE=0.8
+      - CPU_USAGE_THRESHOLD_PERCENTAGE=0.9
+      - SIGNALR_URL=https://host.docker.internal:7296/alertHub
+    depends_on:
+      - rabbitmq
+      - mongodb
+      - signalrserver
+      - servermonitoringandnotificationsystem
+
+  signalrserver:
+    image: signalrserver
+    build:
+      context: .
+      dockerfile: SignalRServer/Dockerfile
+    ports:
+      - "7296:443"
+      - "5009:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=7296
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=certpass123
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - SIGNALR_URL=https://host.docker.internal:7296/alertHub
+    volumes:
+        - ./MessageProcessingAndAnomalyDetection/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
 
 volumes:
   rabbitmq_data:
