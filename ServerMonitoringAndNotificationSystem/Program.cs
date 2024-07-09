@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using ServerMonitoringAndNotificationSystem.Configurations;
 using ServerMonitoringAndNotificationSystem.Interfaces;
@@ -10,18 +11,28 @@ using ServerMonitoringAndNotificationSystem.Services.RabbitMq;
 using System.IO;
 
 
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .Build();
-
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        services.AddSingleton<IConfiguration>(configuration);
-        services.Configure<ServerStatisticsConfig>(configuration.GetSection("ServerStatisticsConfig"));
+        var configuration = new ConfigurationBuilder()
+          .AddEnvironmentVariables()
+          .Build();
+        services.Configure<RabbitMqConfig>(options =>
+        {
+            options.HostName = configuration["RABBITMQ_HOSTNAME"];
+            options.UserName = configuration["RABBITMQ_USERNAME"];
+            options.Password = configuration["RABBITMQ_PASSWORD"];
+        });
+        services.Configure<ServerStatisticsConfig>(options =>
+        {
+            options.ServerIdentifier = configuration["SERVER_IDENTIFIER"];
+            options.SamplingIntervalSeconds = int.Parse(configuration["SAMPLING_INTERVAL_SECONDS"]);
+        });
         services.AddSingleton<IStatisticsCollector, StatisticsCollector>();
-        services.AddSingleton<IRabbitMqConnectionFactory>(provider => new RabbitMqConnectionFactory("localhost"));
+        services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>(provider => {
+            var config = provider.GetRequiredService<IOptions<RabbitMqConfig>>().Value;
+            return new RabbitMqConnectionFactory(config.HostName, config.UserName, config.Password);
+            });
         services.AddSingleton<IMessageQueue, RabbitMqMessageQueue>();
         services.AddSingleton<StatisticsPublisherService>();
     })

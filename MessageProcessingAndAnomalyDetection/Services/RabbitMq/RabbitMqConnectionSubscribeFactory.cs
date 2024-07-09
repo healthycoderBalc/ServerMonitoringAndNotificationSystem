@@ -24,7 +24,12 @@ namespace MessageProcessingAndAnomalyDetection.Services.RabbitMq
 
         public IConnection CreateConnection()
         {
-            var factory = new ConnectionFactory() { HostName = _hostname, UserName = _username, Password = _password };
+            var factory = new ConnectionFactory();
+            factory.UserName = _username;
+            factory.Password = _password;
+            factory.VirtualHost = "/";
+            factory.HostName = _hostname;
+            factory.Port = AmqpTcpEndpoint.UseDefaultPort;
             return factory.CreateConnection();
         }
 

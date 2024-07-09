@@ -1,10 +1,10 @@
 using SignalRServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddSignalR();
-var configuration = builder.Configuration;
-var signalRUrl = configuration.GetSection("SignalRConfig:SignalRUrl").Value;
+var signalRUrl = builder.Configuration["SIGNALR_URL"];
 var uri = new Uri(signalRUrl);
 var alertHubPath = uri.AbsolutePath;
 

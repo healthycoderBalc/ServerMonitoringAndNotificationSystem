@@ -36,7 +36,8 @@ namespace SignalREventConsumerService.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex + " Error connecting to SignalR hub.");
+                Console.WriteLine($"Error connecting to SignalR hub: {ex.Message}");
+                Console.WriteLine(ex);
             }
         }
     }

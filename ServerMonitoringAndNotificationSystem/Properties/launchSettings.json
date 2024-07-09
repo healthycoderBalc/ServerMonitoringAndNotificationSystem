@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ServerMonitoringAndNotificationSystem": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -42,6 +42,14 @@ namespace MessageProcessingAndAnomalyDetection.Services
             bool memoryUsageAnomalyAlert = currentStatistics.MemoryUsage > previousStatistics.MemoryUsage * (1 + _memoryUsageAnomalyThreshold);
             bool cpuUsageAnomalyAlert = currentStatistics.CpuUsage > previousStatistics.CpuUsage * (1 + _cpuUsageAnomalyThreshold);
 
+            SendAlert(new Alert
+            {
+                ServerIdentifier = currentStatistics.ServerIdentifier,
+                AlertType = "No alert raised",
+                Message = $"Test. No anomaly detected. Current: {currentStatistics.MemoryUsage}, Previous: {previousStatistics.MemoryUsage}",
+                Timestamp = currentStatistics.Timestamp
+            });
+
             if (memoryUsageAnomalyAlert)
             {
                 SendAlert(new Alert

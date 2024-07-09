@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "servermonitoringandnotificationsystem": "StartDebugging",
+        "messageprocessingandanomalydetection": "StartDebugging",
+        "mongodb": "StartWithoutDebugging",
+        "rabbitmq": "StartWithoutDebugging",
+        "signalrserver": "StartDebugging",
+        "signalreventconsumerservice": "StartDebugging"
+      }
+    }
+  }
+}
