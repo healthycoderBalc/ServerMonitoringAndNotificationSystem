@@ -56,8 +56,6 @@ services:
       - mongodb
       - signalrserver
       - servermonitoringandnotificationsystem
-    # volumes:
-    #   - ./MessageProcessingAndAnomalyDetection/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
 
   signalrserver:
     image: signalrserver
@@ -65,17 +63,18 @@ services:
       context: .
       dockerfile: SignalRServer/Dockerfile
     ports:
-      - "7296:443"
-      - "5009:80"
+      - "7296:7296"
+      - "5009:5009"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:5009;https://+:7296
+      - ASPNETCORE_HTTP_PORT=5009
       - ASPNETCORE_HTTPS_PORT=7296
       - ASPNETCORE_Kestrel__Certificates__Default__Password=certpass123
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/SignalRServer.pfx
       - SIGNALR_URL=https://host.docker.internal:7296/alertHub
     volumes:
-        - ./MessageProcessingAndAnomalyDetection/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
+      - ./SignalRServer/SignalRServer.pfx:/https/SignalRServer.pfx:ro
 
   signalreventconsumerservice:
     image: ${DOCKER_REGISTRY-}signalreventconsumerservice
@@ -89,7 +88,7 @@ services:
       - signalrserver
       - servermonitoringandnotificationsystem
     volumes:
-      - ./MessageProcessingAndAnomalyDetection/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
+     - ./SignalRServer/SignalRServer.pfx:/https/SignalRServer.pfx:ro
 
 volumes:
   rabbitmq_data:
