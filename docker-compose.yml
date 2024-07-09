@@ -27,6 +27,8 @@ services:
       dockerfile: ServerMonitoringAndNotificationSystem/Dockerfile
     environment:
       - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_USERNAME=agent
+      - RABBITMQ_PASSWORD=agent
       - SERVER_IDENTIFIER=linux1
       - SAMPLING_INTERVAL_SECONDS=60
     depends_on:
@@ -54,8 +56,8 @@ services:
       - mongodb
       - signalrserver
       - servermonitoringandnotificationsystem
-    volumes:
-      - ./MessageProcessingAndAnomalyDetection/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
+    # volumes:
+    #   - ./MessageProcessingAndAnomalyDetection/https/aspnetapp.pfx:/https/aspnetapp.pfx:ro
 
   signalrserver:
     image: signalrserver
@@ -68,7 +70,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      # - ASPNETCORE_URLS=https://*:7296;http://*:5009
       - ASPNETCORE_HTTPS_PORT=7296
       - ASPNETCORE_Kestrel__Certificates__Default__Password=certpass123
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx

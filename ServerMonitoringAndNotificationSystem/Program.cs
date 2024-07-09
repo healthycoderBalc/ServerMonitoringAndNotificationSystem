@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using ServerMonitoringAndNotificationSystem.Configurations;
 using ServerMonitoringAndNotificationSystem.Interfaces;
@@ -9,11 +10,6 @@ using ServerMonitoringAndNotificationSystem.Services.Publisher;
 using ServerMonitoringAndNotificationSystem.Services.RabbitMq;
 using System.IO;
 
-
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .Build();
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
@@ -24,6 +20,8 @@ var host = Host.CreateDefaultBuilder(args)
         services.Configure<RabbitMqConfig>(options =>
         {
             options.HostName = configuration["RABBITMQ_HOSTNAME"];
+            options.UserName = configuration["RABBITMQ_USERNAME"];
+            options.Password = configuration["RABBITMQ_PASSWORD"];
         });
         services.Configure<ServerStatisticsConfig>(options =>
         {
@@ -31,7 +29,10 @@ var host = Host.CreateDefaultBuilder(args)
             options.SamplingIntervalSeconds = int.Parse(configuration["SAMPLING_INTERVAL_SECONDS"]);
         });
         services.AddSingleton<IStatisticsCollector, StatisticsCollector>();
-        services.AddSingleton<IRabbitMqConnectionFactory>(provider => new RabbitMqConnectionFactory(configuration["RABBITMQ_HOSTNAME"]));
+        services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>(provider => {
+            var config = provider.GetRequiredService<IOptions<RabbitMqConfig>>().Value;
+            return new RabbitMqConnectionFactory(config.HostName, config.UserName, config.Password);
+            });
         services.AddSingleton<IMessageQueue, RabbitMqMessageQueue>();
         services.AddSingleton<StatisticsPublisherService>();
     })

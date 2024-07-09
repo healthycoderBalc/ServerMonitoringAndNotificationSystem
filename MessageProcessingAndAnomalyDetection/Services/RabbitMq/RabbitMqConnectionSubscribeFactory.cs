@@ -30,8 +30,6 @@ namespace MessageProcessingAndAnomalyDetection.Services.RabbitMq
             factory.VirtualHost = "/";
             factory.HostName = _hostname;
             factory.Port = AmqpTcpEndpoint.UseDefaultPort;
-
-            //{ HostName = _hostname, UserName = _username, Password = _password };
             return factory.CreateConnection();
         }
 
