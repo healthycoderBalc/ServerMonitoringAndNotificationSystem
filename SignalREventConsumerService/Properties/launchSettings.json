@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SignalREventConsumerService": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -8,7 +8,8 @@
         "messageprocessingandanomalydetection": "StartDebugging",
         "mongodb": "StartWithoutDebugging",
         "rabbitmq": "StartWithoutDebugging",
-        "signalrserver": "StartDebugging"
+        "signalrserver": "StartDebugging",
+        "signalreventconsumerservice": "StartDebugging"
       }
     }
   }

@@ -61,19 +61,16 @@ builder.Services.AddSingleton<IDatabase, MongoDbService>();
 
 builder.Services.AddSingleton<HubConnection>(sp =>
 {
-    var env = sp.GetRequiredService<IHostEnvironment>();
     var signalRConfig = sp.GetRequiredService<IOptions<SignalRConfig>>().Value;
     var hubConnection = new HubConnectionBuilder()
         .WithUrl(signalRConfig.SignalRUrl, conf =>
         {
-            //if (env.IsDevelopment())
-            //{
                 conf.HttpMessageHandlerFactory = (x) => new HttpClientHandler
                 {
-                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
                 };
-            //}
         })
+        .ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Debug))
         .Build();
     hubConnection.StartAsync().Wait();
     return hubConnection;
